@@ -8,14 +8,15 @@ from datetime import datetime
 #The ThiBot
 def commands():
     async def discordMessage(embed):
-        # Personal server Web Hook URL
-        #https://discord.com/api/webhooks/1274219134137274451/D3nqVhEZGSH8w48YaMa4wjgvP-HkdYn_ZMBwzS_duZ7nGgCVVzvce8TBdOapYQrLEugF
-        # Family server Web Hook URL
-        #https://discord.com/api/webhooks/1274223209025241190/QOZeOMgEGMFtIOXkzWiNBKlzwrKjcZ-mwq3_ehoB3yjnmvzyAkf7G0VOgrF-oKuYpfMF
-        webhook = SyncWebhook.partial('1274219134137274451', 'D3nqVhEZGSH8w48YaMa4wjgvP-HkdYn_ZMBwzS_duZ7nGgCVVzvce8TBdOapYQrLEugF')
+
+        # insert WebHook tokens in the parameters for 'SyncWebhook.partial()'.
+        webhook = SyncWebhook.partial('parameter1', 'parameter2')
         webhook.send(username ='DiscountBot', embed = embed)
    
     async def discountCheck(message):
+
+        # Uses BeautifulSoup.py to check for discount on Steam store. If found, the message is embedded and sent to Discord.
+        # If the game is not on sale, the program will throw an exception, so that is why a try/except block is used.
             url = message
             html = requests.get(url)
             s = BeautifulSoup(html.text,'html.parser')
@@ -48,7 +49,8 @@ def commands():
     @client.event
     
     async def on_message(message):
-        
+
+        # Messing around with members of a Discord server. If a certain user sends a message in the server, the bot will respond with a reaction emoji.
         if message.author == client.user:
             return
         if message.author.name == 'nugget8268' or message.author.name == 'mai_0' or message.content.lower().startswith('erm'):
@@ -60,13 +62,16 @@ def commands():
             await message.channel.send('Hello everybody!!!')
         if message.content.startswith('!sender'):
             await message.channel.send(message.author)
+        
+        # The user must add a link to the 'wishlist' as the bot monitors a text file to determine if a game is on sale.
         if message.content.startswith('!wishlist https://store.steampowered'):
             f = open('wishlist.txt', 'a')
             g = open('wishlist.txt', 'r+')
             f.write(message.content.replace('!wishlist', '').strip())
             f.write('\n')
             await message.channel.send('Game added to wishlist')
-           
+
+            # Determines if there is a duplicate on the wishlist.
             seen = set()
             duplicate = False 
             for line in g:
@@ -113,10 +118,8 @@ def commands():
                 except:
                     s.find(class_ = "game_purchase_price price")
                     print(title.text, "is not on Sale")
-                
-                
-            
 
+    # Enter Development Token below. The token that is shown below has expired.
     client.run('MTI3NDIzMzQyNTU0ODgwNDE0OA.G7JP-J.IZl_1ZwVDyjRwXqH-OV0wISsCqVs73DOnCgOMY')
 
 
